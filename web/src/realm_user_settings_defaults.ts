@@ -17,6 +17,7 @@ export type RealmDefaultSettings = {
     enable_followed_topic_desktop_notifications: boolean;
     enable_followed_topic_email_notifications: boolean;
     enable_followed_topic_push_notifications: boolean;
+    enable_dm_silent_mode: boolean;
     enable_followed_topic_wildcard_mentions_notify: boolean;
     enable_login_emails: boolean;
     enable_marketing_emails: boolean;

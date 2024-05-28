@@ -259,6 +259,9 @@ def json_change_settings(
     enable_followed_topic_push_notifications: Optional[bool] = REQ(
         json_validator=check_bool, default=None
     ),
+    enable_dm_silent_mode: Optional[bool] = REQ(
+        json_validator=check_bool, default=None
+    ),
     enable_followed_topic_audible_notifications: Optional[bool] = REQ(
         json_validator=check_bool, default=None
     ),

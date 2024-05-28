@@ -61,6 +61,8 @@ function process_result(data, opts) {
     messages = messages.map((message) => message_helper.process_new_message(message));
     const has_found_oldest = opts.msg_list?.data.fetch_status.has_found_oldest() ?? false;
     const has_found_newest = opts.msg_list?.data.fetch_status.has_found_newest() ?? false;
+    
+    console.log(messages);
 
     // In some rare situations, we expect to discover new unread
     // messages not tracked in unread.ts during this fetching process.

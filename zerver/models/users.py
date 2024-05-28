@@ -152,6 +152,9 @@ class UserBaseSettings(models.Model):
     web_stream_unreads_count_display_policy = models.PositiveSmallIntegerField(
         default=WEB_STREAM_UNREADS_COUNT_DISPLAY_POLICY_UNMUTED_STREAMS
     )
+    
+    # Silent Mode
+    enable_dm_silent_mode = models.BooleanField(default=False)
 
     ### Notifications settings. ###
 
@@ -341,6 +344,7 @@ class UserBaseSettings(models.Model):
         automatically_follow_topics_policy=int,
         automatically_unmute_topics_in_muted_streams_policy=int,
         automatically_follow_topics_where_mentioned=bool,
+        enable_dm_silent_mode=bool,
     )
 
     notification_setting_types = {

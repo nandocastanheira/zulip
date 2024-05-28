@@ -26,6 +26,7 @@ export type UserSettings = (StreamNotificationSettings &
     FollowedTopicNotificationSettings) & {
     automatically_follow_topics_policy: number;
     automatically_follow_topics_where_mentioned: boolean;
+    enable_dm_silent_mode: boolean;
     automatically_unmute_topics_in_muted_streams_policy: number;
     color_scheme: number;
     default_language: string;

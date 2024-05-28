@@ -584,6 +584,9 @@ export const notification_settings_labels = {
     automatically_follow_topics_where_mentioned: $t({
         defaultMessage: "Automatically follow topics where I'm mentioned",
     }),
+    enable_dm_silent_mode:$t({
+        defaultMessage: "Activate Silent Mode"
+    }),
     automatically_unmute_topics_in_muted_streams_policy: $t({
         defaultMessage: "Automatically unmute topics in muted channels",
     }),

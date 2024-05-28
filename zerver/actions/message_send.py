@@ -1630,6 +1630,10 @@ def check_message(
     """
     stream = None
 
+    # Check if the user has silent mode enabled
+    if sender.enable_dm_silent_mode:
+        message_content_raw = "@mute " + message_content_raw
+
     message_content = normalize_body(message_content_raw)
 
     if realm is None:
