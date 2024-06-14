@@ -392,6 +392,7 @@ def build_usermessages(
     mentioned_user_ids: List[int],
     message_id: int,
     is_private: bool,
+   # is_silent:bool,
     long_term_idle: AbstractSet[int] = set(),
 ) -> Tuple[int, int]:
     user_ids = subscriber_map.get(recipient_id, set())
@@ -413,6 +414,7 @@ def build_usermessages(
                 message_id=message_id,
                 is_private=is_private,
                 is_mentioned=is_mentioned,
+             #  is_silent=is_silent,
             )
 
             zerver_usermessage.append(usermessage)
@@ -424,6 +426,7 @@ def build_user_message(
     message_id: int,
     is_private: bool,
     is_mentioned: bool,
+   # is_silent:bool,
     wildcard_mention: bool = False,
 ) -> ZerverFieldsT:
     flags_mask = 1  # For read
@@ -433,7 +436,8 @@ def build_user_message(
         flags_mask += 16
     if is_private:
         flags_mask += 2048  # For is_private
-
+   # if is_silent: 
+    #    flags_mask += 8192
     id = NEXT_ID("user_message")
 
     usermessage = dict(

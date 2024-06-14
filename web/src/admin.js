@@ -223,6 +223,8 @@ export function build_page() {
         user_has_email_set: !settings_data.user_email_not_configured(),
         automatically_follow_topics_policy_values:
             settings_config.automatically_follow_or_unmute_topics_policy_values,
+        realm_enable_dm_silent_mode:
+            page_params.realm_enable_dm_silent_mode,
         automatically_unmute_topics_in_muted_streams_policy_values:
             settings_config.automatically_follow_or_unmute_topics_policy_values,
         realm_enable_guest_user_indicator: realm.realm_enable_guest_user_indicator,

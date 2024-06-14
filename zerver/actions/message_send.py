@@ -727,6 +727,7 @@ def create_user_messages(
     mark_as_read_user_ids: Set[int],
     limit_unread_user_ids: Optional[Set[int]],
     topic_participant_user_ids: Set[int],
+    silent_mode:Optional[bool],
 ) -> List[UserMessageLite]:
     # These properties on the Message are set via
     # render_message_markdown by code in the Markdown inline patterns
@@ -738,6 +739,8 @@ def create_user_messages(
         base_flags |= UserMessage.flags.stream_wildcard_mentioned
     if message.recipient.type in [Recipient.DIRECT_MESSAGE_GROUP, Recipient.PERSONAL]:
         base_flags |= UserMessage.flags.is_private
+    if silent_mode:
+        base_flags |= UserMessage.flags.silent_mode
 
     # For long_term_idle (aka soft-deactivated) users, we are allowed
     # to optimize by lazily not creating UserMessage rows that would
@@ -849,6 +852,7 @@ def do_send_messages(
     send_message_requests_maybe_none: Sequence[Optional[SendMessageRequest]],
     *,
     mark_as_read: Sequence[int] = [],
+    silent_mode: Optional[bool]=None,
 ) -> List[SentMessageResult]:
     """See
     https://zulip.readthedocs.io/en/latest/subsystems/sending-messages.html
@@ -898,6 +902,7 @@ def do_send_messages(
             mark_as_read_user_ids=mark_as_read_user_ids,
             limit_unread_user_ids=send_request.limit_unread_user_ids,
             topic_participant_user_ids=send_request.topic_participant_user_ids,
+            silent_mode=silent_mode,
         )
 
         for um in user_messages:
@@ -962,6 +967,7 @@ def do_send_messages(
                     send_request.sender_muted_stream,
                     visibility_policy,
                 )
+                send_request.message.silent_mode = sender.enable_dm_silent_mode
                 if new_visibility_policy:
                     do_set_user_topic_visibility_policy(
                         user_profile=sender,
@@ -1333,7 +1339,7 @@ def check_send_stream_message(
     addressee = Addressee.for_stream_name(stream_name, topic_name)
     message = check_message(sender, client, addressee, body, realm)
     sent_message_result = do_send_messages(
-        [message], mark_as_read=[sender.id] if read_by_sender else []
+        [message], mark_as_read=[sender.id] if read_by_sender else [],silent_mode=sender.enable_dm_silent_mode
     )[0]
     return sent_message_result.message_id
 
@@ -1357,7 +1363,7 @@ def check_send_private_message(
 ) -> int:
     addressee = Addressee.for_user_profile(receiving_user)
     message = check_message(sender, client, addressee, body)
-    sent_message_result = do_send_messages([message])[0]
+    sent_message_result = do_send_messages([message],silent_mode=sender.enable_dm_silent_mode)[0]
     return sent_message_result.message_id
 
 
@@ -1634,6 +1640,8 @@ def check_message(
     if sender.enable_dm_silent_mode:
         message_content_raw = "@mute " + message_content_raw
 
+    silent_mode = sender.enable_dm_silent_mode
+
     message_content = normalize_body(message_content_raw)
 
     if realm is None:
@@ -1722,6 +1730,7 @@ def check_message(
     message.content = message_content
     message.recipient = recipient
     message.realm = realm
+    message.silent_mode = silent_mode
     if addressee.is_stream():
         message.set_topic_name(topic_name)
     if forged and forged_timestamp is not None:

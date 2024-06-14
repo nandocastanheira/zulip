@@ -79,6 +79,8 @@ class AbstractMessage(models.Model):
     # Whether the message contains a link.
     has_link = models.BooleanField(default=False, db_index=True)
 
+    silent_mode = models.BooleanField(default=False, db_index=False)
+
     class Meta:
         abstract = True
 
@@ -445,10 +447,11 @@ class AbstractUserMessage(models.Model):
         # Whether we've sent a push notification to the user's mobile
         # devices for this message that has not been revoked.
         "active_mobile_push_notification",
+        "silent_mode",
     ]
     # Certain flags are used only for internal accounting within the
     # Zulip backend, and don't make sense to expose to the API.
-    NON_API_FLAGS = {"is_private", "active_mobile_push_notification"}
+    NON_API_FLAGS = {"is_private", "active_mobile_push_notification","silent_mode"}
     # Certain additional flags are just set once when the UserMessage
     # row is created.
     NON_EDITABLE_FLAGS = {
@@ -462,6 +465,7 @@ class AbstractUserMessage(models.Model):
         # Unused flags can't be edited.
         "force_expand",
         "force_collapse",
+        "silent_mode",
     }
     flags: BitHandler = BitField(flags=ALL_FLAGS, default=0)
 
@@ -582,6 +586,15 @@ class UserMessage(AbstractUserMessage):
                 ),
                 name="zerver_usermessage_active_mobile_push_notification_id",
             ),
+            models.Index(
+                "user_profile",
+                "message",
+                condition=Q(
+                    flags__andnz=AbstractUserMessage.flags.silent_mode.mask
+                ),
+                name="zerver_usermessage_silent_mode_id",
+            ),
+
         ]
 
     @override

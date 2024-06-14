@@ -182,6 +182,10 @@ export function message_is_notifiable(message) {
         return false;
     }
 
+    if(message.silent_mode){
+        return false;
+    }
+
     // If a message is edited multiple times, we want to err on the side of
     // not spamming notifications.
     if (message.notification_sent) {

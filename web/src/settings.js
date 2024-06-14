@@ -140,6 +140,8 @@ export function build_page() {
             settings_config.automatically_follow_or_unmute_topics_policy_values,
         automatically_unmute_topics_in_muted_streams_policy_values:
             settings_config.automatically_follow_or_unmute_topics_policy_values,
+        enable_dm_silent_mode:
+            page_params.enable_dm_silent_mode,
     });
 
     settings_bots.update_bot_settings_tip($("#personal-bot-settings-tip"), false);

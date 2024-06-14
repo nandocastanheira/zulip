@@ -89,6 +89,7 @@ export type MessageWithBooleans = (
     collapsed: boolean;
     condensed?: boolean;
     alerted: boolean;
+    silent_mode: boolean;
 };
 
 export type MessageCleanReaction = {
@@ -211,6 +212,7 @@ export function set_message_booleans(message: Message): void {
     message.topic_wildcard_mentioned = convert_flag("topic_wildcard_mentioned");
     message.collapsed = convert_flag("collapsed");
     message.alerted = convert_flag("has_alert_word");
+    message.silent_mode = convert_flag("silent_mode");
 
     // Once we have set boolean flags here, the `flags` attribute is
     // just a distraction, so we delete it.  (All the downstream code
